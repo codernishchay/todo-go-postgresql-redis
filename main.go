@@ -15,9 +15,10 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/todo/create", controllers.CreateTodo).Methods(http.MethodPost)
-	router.HandleFunc("/test", controllers.Test).Methods(http.MethodPost)
 	router.HandleFunc("/todo/{id}", controllers.GetTodoByID).Methods(http.MethodGet)
-
+	router.HandleFunc("/todo/getall", controllers.GetAllTodos).Methods(http.MethodGet)
+	router.HandleFunc("/todo/delete/{id}", controllers.DeleteTodo).Methods(http.MethodDelete)
+	router.HandleFunc("/todo/update/{id}", controllers.UpdateTodo).Methods(http.MethodPut)
 	log.Println("API is running ")
 
 	handler := cors.Default().Handler(router)

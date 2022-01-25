@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/jinzhu/gorm"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -10,12 +8,9 @@ import (
 
 type Todo struct {
 	gorm.Model
-	TodoID      uint
-	What        string
+	Todo        string
 	Description string
 	Done        bool
-	End         time.Time
-	Start       time.Time
+	Date        int
 	Priority    int
-	// Labels      []string
 }
