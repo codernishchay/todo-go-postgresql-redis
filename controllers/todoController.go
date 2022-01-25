@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,7 +12,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var ctx = context.Background()
+
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
+
 	var todo models.Todo
 	json.NewDecoder(r.Body).Decode(&todo)
 
@@ -37,14 +41,30 @@ func GetAllTodos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&result)
 }
 
-// response :  todo with particuler id
+// get todo by id
+// look into cache if there
+// else get from db
+// push into cache
+
 func GetTodoByID(w http.ResponseWriter, r *http.Request) {
+
 	params := mux.Vars(r)
+	val, err := config.Cache.Get(ctx, params["id"]).Result()
+	if err == nil {
+		json.NewEncoder(w).Encode(&val)
+		return
+	}
 	var todo models.Todo
 	result := config.DB.First(&todo, params["id"])
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
+
+	err = config.Cache.Set(ctx, params["id"], result, 0).Err()
+	if err != nil {
+		fmt.Println("Error in Redis")
+	}
+
 	json.NewEncoder(w).Encode(&result)
 }
 

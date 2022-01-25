@@ -1,10 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"todo/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -27,6 +25,7 @@ func Init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(DB)
-	DB.AutoMigrate(&models.Todo{})
+	// fmt.Println(DB)
+	// DB.AutoMigrate(&models.Todo{})
+
 }

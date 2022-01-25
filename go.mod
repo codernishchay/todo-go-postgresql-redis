@@ -28,5 +28,6 @@ require (
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/rs/cors v1.8.2 // indirect
+	golang.org/x/net v0.0.0-20220121210141-e204ce36a2ba
 	gorm.io/driver/postgres v1.2.3
 )
