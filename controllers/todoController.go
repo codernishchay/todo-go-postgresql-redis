@@ -50,21 +50,25 @@ func GetAllTodos(w http.ResponseWriter, r *http.Request) {
 func GetTodoByID(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
-	val, err := config.Cache.Get(ctx, params["id"]).Result()
-	if err == nil {
-		json.NewEncoder(w).Encode(&val)
-		return
-	}
+	// val, err := config.Cache.Get(ctx, params["id"]).Result()
+
+	// if err == nil {
+	// 	json.NewEncoder(w).Encode(&val)
+	// 	return
+	// }else {
+	// 	panic(err)
+	// }
+
 	var todo models.Todo
 	result := config.DB.First(&todo, params["id"])
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
 
-	err = config.Cache.Set(ctx, params["id"], result, 0).Err()
-	if err != nil {
-		fmt.Println("Error in Redis")
-	}
+	// err = config.Cache.Set(ctx, params["id"], result, 0).Err()
+	// if err != nil {
+	// 	fmt.Println("Error in Redis")
+	// }
 
 	json.NewEncoder(w).Encode(&todo)
 }
