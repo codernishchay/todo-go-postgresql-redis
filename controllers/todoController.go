@@ -32,13 +32,14 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 // response :  all todos
 func GetAllTodos(w http.ResponseWriter, r *http.Request) {
-	result := config.DB.Find(&models.Todo{})
+	var todos []models.Todo
+	result := config.DB.Find(&todos)
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
-
-	json.NewEncoder(w).Encode(&result)
+	fmt.Println(result.Rows())
+	json.NewEncoder(w).Encode(todos)
 }
 
 // get todo by id
@@ -65,7 +66,7 @@ func GetTodoByID(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error in Redis")
 	}
 
-	json.NewEncoder(w).Encode(&result)
+	json.NewEncoder(w).Encode(&todo)
 }
 
 func UpdateTodo(w http.ResponseWriter, r *http.Request) {
@@ -85,5 +86,5 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
-	json.NewEncoder(w).Encode(&result)
+	json.NewEncoder(w).Encode("Deleted")
 }

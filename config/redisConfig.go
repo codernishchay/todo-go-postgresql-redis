@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/go-redis/redis/v8"
 )
 
@@ -12,6 +14,5 @@ func RedisInit() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	// fmt.Println(rdb)
-
+	fmt.Println("Connected to Redis")
 }
