@@ -25,7 +25,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode("Created")
+	json.NewEncoder(w).Encode(&todo)
 
 }
 
@@ -80,6 +80,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	if config.DB.Model(&todo).Where("id= ?", params["id"]).Updates(&todo).RowsAffected == 0 {
 		config.DB.Create(&todo)
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	json.NewEncoder(w).Encode(&todo)
 }
@@ -90,5 +91,12 @@ func DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode("Deleted")
+}
+
+func DeleteAllTodos(w http.ResponseWriter, r *http.Request) {
+	var todos models.Todo
+	result := config.DB.Where("Todo = ?", "").Delete(&todos)
+	json.NewEncoder(w).Encode(&result)
 }

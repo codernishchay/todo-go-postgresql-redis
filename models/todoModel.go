@@ -11,6 +11,6 @@ type Todo struct {
 	Todo        string
 	Description string
 	Done        bool
-	Date        int
-	Priority    int
+	Date        string
+	Priority    string
 }
