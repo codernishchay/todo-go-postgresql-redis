@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"todo/config"
 	"todo/models"
@@ -77,11 +76,12 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var todo models.Todo
 	json.NewDecoder(r.Body).Decode(&todo)
-	err := config.DB.Model(&todo).Where("id= ?", params["id"]).Updates(map[string]interface{}{"Todo": todo.Todo, "Description": todo.Description, "Date": todo.Date, "Priority": todo.Priority})
-	if err != nil {
-		log.Fatal(err)
+
+	if config.DB.Model(&todo).Where("id= ?", params["id"]).Updates(&todo).RowsAffected == 0 {
+		config.DB.Create(&todo)
 	}
 
+	json.NewEncoder(w).Encode(&todo)
 }
 
 func DeleteTodo(w http.ResponseWriter, r *http.Request) {
