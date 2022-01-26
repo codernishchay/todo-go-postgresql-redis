@@ -3,7 +3,7 @@ Setup
 ```jsx
 go run main.go 
 ```
-
+### React Client : [Client](https://github.com/codernishchay/todo-app-react)
 ### Endpoints
 
 | /todo/{id} | to get todo with id  |
