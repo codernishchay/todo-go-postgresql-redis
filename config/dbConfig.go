@@ -12,8 +12,6 @@ import (
 
 var DB *gorm.DB
 
-// postgresql db connection
-
 func Init() {
 	er := godotenv.Load()
 	if er != nil {
@@ -30,3 +28,5 @@ func Init() {
 	DB.AutoMigrate(&models.Todo{})
 
 }
+
+// https://talks.golang.org/2013/bestpractices.slide#9

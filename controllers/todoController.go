@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"todo/config"
 	"todo/models"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
 )
 
@@ -34,7 +36,7 @@ func GetAllTodos(w http.ResponseWriter, r *http.Request) {
 	var todos []models.Todo
 	result := config.DB.Find(&todos)
 
-	if result.Error != nil {
+	if result.Error != redis.Nil {
 		fmt.Println(result.Error)
 	}
 	fmt.Println(result.Rows())
@@ -47,28 +49,31 @@ func GetAllTodos(w http.ResponseWriter, r *http.Request) {
 // push into cache
 
 func GetTodoByID(w http.ResponseWriter, r *http.Request) {
-
+	// defer HandlePanic()
 	params := mux.Vars(r)
-	// val, err := config.Cache.Get(ctx, params["id"]).Result()
-
-	// if err == nil {
-	// 	json.NewEncoder(w).Encode(&val)
-	// 	return
-	// }else {
-	// 	panic(err)
-	// }
-
 	var todo models.Todo
+
+	val, err := config.Cache.Get(ctx, params["id"]).Result()
+
+	if err == nil {
+
+		json.NewEncoder(w).Encode(&val)
+		return
+	}
+
 	result := config.DB.First(&todo, params["id"])
 	if result.Error != nil {
 		fmt.Println(result.Error)
 	}
+	data, err := todo.MarshalBinary()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	// err = config.Cache.Set(ctx, params["id"], result, 0).Err()
-	// if err != nil {
-	// 	fmt.Println("Error in Redis")
-	// }
-
+	er := config.Cache.Set(ctx, strconv.Itoa(int(todo.ID)), data, 0).Err()
+	if er != nil {
+		panic(er)
+	}
 	json.NewEncoder(w).Encode(&todo)
 }
 
@@ -99,4 +104,9 @@ func DeleteAllTodos(w http.ResponseWriter, r *http.Request) {
 	var todos models.Todo
 	result := config.DB.Where("Todo = ?", "").Delete(&todos)
 	json.NewEncoder(w).Encode(&result)
+}
+
+func HandlePanic() {
+	fmt.Println("Panic, try to avoid")
+	fmt.Printf("recover(): %v\n", recover())
 }

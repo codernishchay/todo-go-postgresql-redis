@@ -12,6 +12,7 @@ import (
 
 func main() {
 	config.Init()
+	config.RedisInit()
 	router := mux.NewRouter()
 
 	router.HandleFunc("/todo/create", controllers.CreateTodo).Methods(http.MethodPost)
